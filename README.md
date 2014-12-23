@@ -10,19 +10,19 @@ Clone this repo using ```git clone git@github.com:gosuri/ca-cert.git``` and foll
 
 1. Configure OpenSSL (once)
 
-     $ $EDITOR openssl.cnf
+        $ $EDITOR openssl.cnf
 
 2. Create a root certificate (once)
 
-     $ ca-cert --new-cert
+        $ ca-cert --new-ca
 
 3. Generate a certificate signing request (CSR) (for each domain)
     
-     $ ca-cert --new-req
+        $ ca-cert --new-req
 
 4. Sign the request (for each domain)
     
-     $ ca-cert --sign
+        $ ca-cert --sign
 
 ## Notes
 
