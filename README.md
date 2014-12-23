@@ -6,6 +6,10 @@ Based on [SSL Certificates HOWTO](http://www.tldp.org/HOWTO/SSL-Certificates-HOW
 
 ## Usage
 
+
+
+## Generating a certificate
+
 Clone this repo using ```git clone git@github.com:gosuri/ca-cert.git``` and follow the below steps to generate a certificate
 
 1. Configure OpenSSL (once)
