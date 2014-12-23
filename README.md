@@ -6,7 +6,11 @@ Based on [SSL Certificates HOWTO](http://www.tldp.org/HOWTO/SSL-Certificates-HOW
 
 ## Usage
 
-
+    Usage: ca-cert [-c] [-r]
+      -c, --new-ca   Generates a new root certificate
+      -r, --new-req  Generate a certificate signing request and signs it
+      -h, --help     Display this help message
+      -v, --version  Display the version number
 
 ## Generating a certificate
 
@@ -23,10 +27,6 @@ Clone this repo using ```git clone git@github.com:gosuri/ca-cert.git``` and foll
 3. Generate a certificate signing request (CSR) (for each domain)
     
         $ ca-cert --new-req
-
-4. Sign the request (for each domain)
-    
-        $ ca-cert --sign
 
 ## Notes
 
