@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+# Directory where certificates are placed
+CERTS_DIR=${HOME}/.ssl
+
+# open ssl config file path
+OPENSSL=$(pwd)/openssl.cnf
+
+# Days the root certificate will be valid for
+ROOT_CA_DAYS=3650
+
+# Default days generates certificates will be valid for
+DEFAULT_DAYS=365
+
+# name of the current executable
+PROGRAM=${0##*/}
+
+set -o nounset
+set -o errexit
+
+function init() {
+  local serial=${CERTS_DIR}/serial
+  local index=${CERTS_DIR}/index.txt
+
+  # create required directories
+  mkdir -p ${CERTS_DIR}/private
+  mkdir -p ${CERTS_DIR}/certs
+  mkdir -p ${CERTS_DIR}/newcerts
+
+  # initialize the CA database
+  [ -a ${serial} ] || echo "01" > ${serial}
+  [ -a ${index} ]  || touch ${index}
+}
+
+function generate_ca() {
+  local cert="${CERTS_DIR}/${1}cert.pem"
+  local key="${CERTS_DIR}/private/${1}key.pem"
+  local crt="${CERTS_DIR}/${1}cert.crt"
+
+  openssl req -config ${OPENSSL} -new -x509 -keyout ${key} -out ${cert} -days ${DEFAULT_DAYS}
+  openssl x509 -in ${cert} -out ${crt}
+  echo 
+  echo 
+  echo "Successfully generated certificate ${cert} and key ${key}"
+  echo "Ensure that this self signed root certificate is used only to sign other certificates."
+  echo "The private key is highly sensible, never compromise it, by removing the passphrase that protects it"
+}
+
+function generate_cert() {
+  local key="${1}.pem"
+  openssl req -config ${OPENSSL} -new -keyout ${key} -out ${key} -days ${DEFAULT_DAYS}
+}
+
+function sign() {
+  local key="${1}.pem"
+  local cert="${1}_cert.pem"
+  openssl ca -config ${OPENSSL} -policy policy_anything -out ${cert} -infiles ${key}
+}
+
+init
+case "${1}" in
+  -c|--new-ca)
+    generate_ca "ca"
+    ;;
+  -r|--new-req)
+    generate_cert "newreq"
+    sign "newreq"
+    ;;
+  *)
+    exit 1
+    ;;
+esac
